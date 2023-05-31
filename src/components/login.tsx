@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import http from "../services/httpService";
 
 function Login() {
+    localStorage.clear();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -50,7 +51,7 @@ function Login() {
                     if (response.data.user.role == 'user') {
                         navigate('/vacations')
                     } else if (response.data.user.role == 'admin') {
-                        navigate('/admin-vacations')
+                        navigate('/admin-home')
                     } else {
                         navigate('/register')
                     }
@@ -70,7 +71,7 @@ function Login() {
 
 
     return (
-        <div className="container App">
+        <div className="container App h-100vh">
             <div className="d-flex align-items-center justify-content-center h-100">
                 <div className="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div className="card border-0 w-100 p-3 shadow">

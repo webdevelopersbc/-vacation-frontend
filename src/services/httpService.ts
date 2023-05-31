@@ -21,8 +21,20 @@ const addVacation: any = (data: any) => {
     return httpCommon.post("/vacations", data, config);
 };
 
+const updateVacation: any = (id: any, data: any) => {
+    return httpCommon.put(`/update-vacations/${id}`, data, config);
+};
+
 const getVacations: any = () => {
     return httpCommon.get("/vacations-list", headers);
+};
+
+const getVacationById: any = (id: any) => {
+    return httpCommon.get(`/vacations-by-id/${id}`, headers);
+};
+
+const deleteVacation: any = (id: any) => {
+    return httpCommon.delete(`/delete-vacations/${id}`, headers);
 };
 
 const updateFollower: any = (user_id: any, vacation_id: any, data: any) => {
@@ -33,8 +45,11 @@ const http = {
     login,
     register,
     addVacation,
+    updateVacation,
     getVacations,
-    updateFollower
+    getVacationById,
+    updateFollower,
+    deleteVacation
 };
 
 export default http;

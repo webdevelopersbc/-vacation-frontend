@@ -99,7 +99,7 @@ function Register() {
     };
 
     return (
-        <div className="container App">
+        <div className="container App h-100vh">
             <div className="d-flex align-items-center justify-content-center h-100">
                 <div className="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div className="card border-0 w-100 p-3 shadow">

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import http from "../services/httpService";
 import moment from "moment";
+import Navbar from "./navbar";
+import Footer from "./footer";
+let baseURL = 'http://localhost:3003/images/';
 
 function AdminVacations() {
     const today = new Date().toDateString();
@@ -26,33 +29,43 @@ function AdminVacations() {
             });
     }
 
-    const addVacation = () => {
-        navigate('/add-vacation')
+    const handleVacationEdit = (vacation_id: any) => {
+        console.log(vacation_id, 'vacations id')
+        navigate(`/edit-vacation/${vacation_id}`)
+    }
+
+    const handleVacationDelete = (vacation_id: any) => {
+        console.log(vacation_id, 'vacations id')
+        http.deleteVacation(vacation_id)
+            .then((response: any) => {
+                console.log(response)
+                if (response.status == 200) {
+                    getVacations();
+                }
+            })
+            .catch((e: Error) => {
+                console.error(e);
+            });
     }
 
     return (
-        <div className="container App py-5">
-            <div className="d-flex justify-content-end mb-3 px-3">
-                <button onClick={addVacation} className="btn btn-primary w-auto rounded-1">
-                    <i className="bi bi-plus-circle-fill me-2"></i>
-                    Add Vacation
-                </button>
-            </div>
-            <div className="row d-flex align-items-center justify-content-center h-100">
+        <div className="container App ">
+            <Navbar />
+            <div className="row d-flex align-items-start justify-content-center h-100 inner-container my-5">
                 {vacationsList?.map((vacation: any) =>
                     <div className="col-12 col-md-6 col-lg-4 mb-4">
                         <div className="card position-relation shadow border-0 mx-2">
                             <div className="card-image">
-                                <img src={require('../assets/images/images.jpg')} className="card-img-top h-100 w-100" alt="Vacations" />
+                                <img src={baseURL + vacation?.image} className="card-img-top object-fit-cover h-100 w-100" alt="Vacations" />
                             </div>
                             <div className="card-body px-0">
                                 <div className="position-absolute fs-12 likes-container fw-bold text-muted">
                                     <div className="d-flex">
-                                        <div className="bg-white rounded-pill px-2 py-1">
+                                        <div onClick={() => handleVacationEdit(vacation.id)} className="pointer bg-white rounded-pill px-2 py-1">
                                             <i className="bi bi-pencil-fill me-1"></i>
                                             <span>Edit</span>
                                         </div>
-                                        <div className="bg-white rounded-pill px-2 py-1 ms-2">
+                                        <div onClick={() => handleVacationDelete(vacation.id)} className="pointer bg-white rounded-pill px-2 py-1 ms-2">
                                             <i className="bi bi-trash-fill me-1"></i>
                                             <span>Delete</span>
                                         </div>
@@ -78,6 +91,7 @@ function AdminVacations() {
                     </div>
                 )}
             </div>
+            {/* <Footer /> */}
         </div>
     )
 }

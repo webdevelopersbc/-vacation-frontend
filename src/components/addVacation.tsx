@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import http from "../services/httpService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Navbar from "./navbar";
+import moment from "moment";
 
 function AddVacation() {
     const [destination, setDestination] = useState('');
@@ -15,6 +17,38 @@ function AddVacation() {
         price: '',
     });
     const navigate = useNavigate();
+    const params = useParams();
+    console.log(params);
+    let isEdit: boolean = false;
+    if (params.id) isEdit = true;
+    console.log(isEdit)
+
+    useEffect(() => {
+        if (params.id) {
+            isEdit = true;
+            http.getVacationById(params.id)
+                .then((response: any) => {
+                    console.log(response)
+                    if (response.status == 200) {
+                        setValues(response.data.data)
+                    }
+                })
+                .catch((e: Error) => {
+                    console.error(e);
+                });
+        }
+    }, [])
+
+    const setValues = (vacationDetails: any) => {
+        // 2023-06-01
+        setDestination(vacationDetails.destination)
+        setDescription(vacationDetails.description)
+        setStartDate(moment(vacationDetails.start_date).format('YYYY-MM-DD'))
+        setEndDate(moment(vacationDetails.end_date).format('YYYY-MM-DD'))
+        setPrice(vacationDetails.price)
+    }
+
+
     let file: any
     let formData = new FormData();
 
@@ -81,28 +115,43 @@ function AddVacation() {
             formData.append('start_date', startDate)
             formData.append('end_date', endDate)
             formData.append('price', price)
-            formData.append('image', file)
+            if (file) formData.append('image', file)
 
-            http.addVacation(formData)
-                .then((response: any) => {
-                    console.log(response)
-                    if (response.status == 200) {
-                        navigate('/admin-vacations')
-                    }
-                })
-                .catch((e: Error) => {
-                    console.error(e);
-                });
+            if (!isEdit) {
+                http.addVacation(formData)
+                    .then((response: any) => {
+                        console.log(response)
+                        if (response.status == 200) {
+                            navigate('/admin-vacations')
+                        }
+                    })
+                    .catch((e: Error) => {
+                        console.error(e);
+                    });
+            }
+            if (isEdit) {
+                http.updateVacation(params.id, formData)
+                    .then((response: any) => {
+                        console.log(response)
+                        if (response.status == 200) {
+                            navigate('/admin-vacations')
+                        }
+                    })
+                    .catch((e: Error) => {
+                        console.error(e);
+                    });
+            }
         }
 
     }
     return (
         <div className="container App">
-            <div className="d-flex align-items-center justify-content-center h-100">
+            <Navbar />
+            <div className="d-flex align-items-center justify-content-center h-100 inner-container my-5">
                 <div className="col-12 col-md-8 col-lg-6 col-xl-5">
                     <div className="card border-0 w-100 p-3 shadow">
                         <div className="card-header bg-transparent border-0 text-primary">
-                            <h3 className='card-title fw-bold'>Add Vacation</h3>
+                            <h3 className='card-title fw-bold'>{isEdit ? 'Update Vacation' : 'Add Vacation'}</h3>
                         </div>
                         <div className="card-body">
                             <form onSubmit={handleSubmit}>
@@ -140,7 +189,7 @@ function AddVacation() {
                                     </div>
                                 </div>
                                 <div className="my-3 text-start">
-                                    <button type="submit" className="btn btn-primary fw-bold w-100 p-2">Add Vacation</button>
+                                    <button type="submit" className="btn btn-primary fw-bold w-100 p-2">{isEdit ? 'Update Vacation' : 'Add Vacation'}</button>
                                     {/* <button type="button" className="btn btn-primary fw-bold w-100">Update Vacation</button> */}
                                 </div>
                             </form>

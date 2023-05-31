@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import http from "../services/httpService";
 import moment from "moment";
-let baseURL = 'http://localhost:3004/'
+import Navbar from "./navbar";
+let baseURL = 'http://localhost:3003/images/';
 
 function Vacations() {
     const [vacationsList, setVacationList] = useState([]);
+    let data: any = localStorage.getItem('user')
+    let userId: any = JSON.parse(data).id
 
     useEffect(() => {
         getVacations();
@@ -26,23 +29,14 @@ function Vacations() {
     const updateFollowers = (vacationId: any, followerId?: any) => {
         console.log(vacationId, 'vacationId')
         console.log(followerId, 'followerId')
-        let data: any = localStorage.getItem('user')
-        let userId: any = JSON.parse(data).id
+
         console.log(userId)
 
-        console.log(vacationsList)
-        if (followerId) {
-            vacationsList.forEach((vacation: any) => {
-                if (vacation.followersArray.includes(followerId) && vacation.id == vacationId) {
-                    console.log(vacation.followersArray.includes(followerId))
-                    updateFollowStatus('unfollow', userId, vacation.id)
-                }
-            })
+        if (followerId?.includes(userId)) {
+            updateFollowStatus('unfollow', userId, vacationId)
         } else {
             updateFollowStatus('follow', userId, vacationId)
         }
-
-
     }
 
     const updateFollowStatus = (status: any, userId: any, vacationId: any) => {
@@ -51,6 +45,7 @@ function Vacations() {
                 if (response.status == 200) {
                     if (response.status == 200) {
                         console.log(response)
+                        getVacations();
                     }
                 }
             })
@@ -60,21 +55,19 @@ function Vacations() {
     }
 
     return (
-        <div className="container App py-5">
-            <div className="row d-flex align-items-center justify-content-center h-100">
+        <div className="container App ">
+            <Navbar />
+            <div className="row d-flex align-items-start justify-content-center h-100 inner-container my-5">
                 {vacationsList?.map((vacation: any) =>
                     <div className="col-12 col-md-6 col-lg-4 mb-4">
                         <div className="card position-relation shadow border-0 mx-2">
                             <div className="card-image">
-                                <img src={require('../assets/images/images.jpg')} className="card-img-top h-100 w-100" alt="Vacations" />
+                                <img src={baseURL + vacation?.image} className="card-img-top object-fit-cover h-100 w-100" alt="Vacations" />
                             </div>
-                            {/* <div className="card-image">
-                                <img src={baseURL + vacation?.image} className="card-img-top h-100 w-100" alt="Vacations" />
-                            </div> */}
 
                             <div className="card-body px-0">
                                 {vacation.followersArray?.map((followerId: any) =>
-                                    <div onClick={() => updateFollowers(vacation.id, followerId)} className={`position-absolute pointer ${followerId == vacation.id ? 'bg-light-red text-white' : 'bg-white text-muted'} rounded-pill px-2 py-1 fs-12 likes-container fw-bold `}>
+                                    <div onClick={() => updateFollowers(vacation.id, vacation.followersArray)} className={`position-absolute pointer ${followerId == userId ? 'bg-light-red text-white' : 'bg-white text-muted'} rounded-pill px-2 py-1 fs-12 likes-container fw-bold `}>
                                         <i className="bi bi-heart me-1"></i>
                                         <span>Like {vacation?.followersCount}</span>
                                     </div>
