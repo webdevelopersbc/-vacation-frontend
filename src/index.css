@@ -1,0 +1,72 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  text-align: center;
+  height: 100vh;
+}
+
+.fs-12 {
+  font-size: 12px;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.fs-15 {
+  font-size: 15px;
+}
+
+.bg-light-blue {
+  background-color: skyblue;
+}
+
+.bg-light-red {
+  background-color: #ff8d8d;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+  border-color: #ced4da !important;
+}
+
+textarea {
+  resize: none;
+}
+
+.card-image {
+  height: 200px;
+  width: 100%;
+}
+
+.card-title-container {
+  top: 128px;
+}
+
+.card-title-container p {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.likes-container {
+  top: 10px;
+  left: 10px
+}
